@@ -1,7 +1,7 @@
-// ── CONFIG ──
+// ── Configuracion ──
 const API_BASE = "http://localhost:3000";
 
-// ── State ──
+// ── Estado ──
 let lang           = "es";
 let activeCurrency = "USD";
 let editingId      = null;
@@ -9,10 +9,10 @@ let cachedProducts = [];
 let exchangeRates  = { USD: 1 };
 let historyOpen    = false;
 
-// ── Supported currencies ──
+
 const CURRENCIES = ["USD", "GTQ", "EUR", "MXN", "GBP"];
 
-// ── Translations ──
+// ── Traductor ──
 const i18n = {
   es: {
     title:          "Gestor de <span>Productos</span>",
@@ -116,7 +116,7 @@ const i18n = {
 
 let t = i18n[lang];
 
-// ── DOM refs ──
+// ── Referencias ──
 const form           = document.getElementById("product-form");
 const list           = document.getElementById("product-list");
 const emptyState     = document.getElementById("empty-state");
@@ -136,7 +136,7 @@ const historyList    = document.getElementById("history-list");
 const historyEmpty   = document.getElementById("history-empty");
 const historyArrow   = document.getElementById("history-arrow");
 
-// Filter refs
+// Filtrado de referencias
 const filterName     = document.getElementById("filter-name");
 const filterMinPrice = document.getElementById("filter-min-price");
 const filterMaxPrice = document.getElementById("filter-max-price");
@@ -144,9 +144,7 @@ const filterCat      = document.getElementById("filter-cat");
 
 let toastTimer;
 
-// ─────────────────────────────────────────────
-// Fetch exchange rates
-// ─────────────────────────────────────────────
+// Obtener los tipos de cambio
 async function fetchExchangeRates() {
   try {
     const res  = await fetch("https://open.er-api.com/v6/latest/USD");
@@ -156,7 +154,7 @@ async function fetchExchangeRates() {
       updateRateDisplay();
     }
   } catch {
-    // use fallback rates
+    // utilizar tarifas alternativas
     exchangeRates = { USD: 1, GTQ: 7.64, EUR: 0.93, MXN: 17.15, GBP: 0.79 };
     updateRateDisplay();
   }
@@ -181,7 +179,7 @@ function formatPrice(usdPrice) {
   return `${symbol}${amount} ${activeCurrency !== "USD" ? activeCurrency : ""}`.trim();
 }
 
-// ── Build currency selector ──
+// ── Selector de moneda ──
 function buildCurrencySelector() {
   currencySelect.innerHTML = "";
   CURRENCIES.forEach(c => {
@@ -206,7 +204,7 @@ function updatePriceLabel() {
 }
 
 // ─────────────────────────────────────────────
-// Apply translations
+// Aplicacion de traducciones
 // ─────────────────────────────────────────────
 function applyLang() {
   t = i18n[lang];
@@ -236,8 +234,7 @@ function applyLang() {
   renderProducts(cachedProducts);
 }
 
-// ─────────────────────────────────────────────
-// Category dropdowns
+// Marcadores de posición del filtro
 // ─────────────────────────────────────────────
 function rebuildCategories(selectedValue = "") {
   catSelect.innerHTML = `<option value="" disabled selected>${t.catPlaceholder}</option>`;
@@ -280,8 +277,7 @@ function getCategoryValue() {
   return catSelect.value === "__custom__" ? customCatInput.value.trim() : catSelect.value;
 }
 
-// ─────────────────────────────────────────────
-// Filters
+// Filtros
 // ─────────────────────────────────────────────
 [filterName, filterMinPrice, filterMaxPrice, filterCat].forEach(el => {
   el.addEventListener("input",  () => renderProducts(cachedProducts));
@@ -303,16 +299,14 @@ function filterProducts(products) {
   });
 }
 
-// ─────────────────────────────────────────────
-// Language toggle
+// Seleccionar idioma
 // ─────────────────────────────────────────────
 langBtn.addEventListener("click", () => {
   lang = lang === "es" ? "en" : "es";
   applyLang();
 });
 
-// ─────────────────────────────────────────────
-// Toast
+// Notificaciones (toasts)
 // ─────────────────────────────────────────────
 function showToast(msg, isError = false) {
   clearTimeout(toastTimer);
@@ -321,8 +315,7 @@ function showToast(msg, isError = false) {
   toastTimer = setTimeout(() => { toastEl.className = ""; }, 3000);
 }
 
-// ─────────────────────────────────────────────
-// Load & render products
+// Cargar y mostrar productos
 // ─────────────────────────────────────────────
 async function loadProducts() {
   try {
@@ -372,8 +365,7 @@ function renderProducts(products) {
   });
 }
 
-// ─────────────────────────────────────────────
-// Submit (add or edit)
+// Enviar (añadir o editar)
 // ─────────────────────────────────────────────
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -431,8 +423,7 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// ─────────────────────────────────────────────
-// Edit / Delete
+// Editar y eliminar productos
 // ─────────────────────────────────────────────
 list.addEventListener("click", async (e) => {
   const editBtn = e.target.closest(".btn-edit");
@@ -487,8 +478,7 @@ list.addEventListener("click", async (e) => {
   }
 });
 
-// ─────────────────────────────────────────────
-// Cancel edit
+// Cacelar edición
 // ─────────────────────────────────────────────
 function cancelEdit() {
   editingId = null;
@@ -502,8 +492,7 @@ function cancelEdit() {
 }
 cancelBtn.addEventListener("click", cancelEdit);
 
-// ─────────────────────────────────────────────
-// History
+// Hitorial de cambios
 // ─────────────────────────────────────────────
 historyToggle.addEventListener("click", () => {
   historyOpen = !historyOpen;
@@ -592,7 +581,6 @@ function renderHistory(items) {
   });
 }
 
-// ─────────────────────────────────────────────
 // Escape HTML
 // ─────────────────────────────────────────────
 function escHtml(str) {
@@ -603,18 +591,17 @@ function escHtml(str) {
     .replace(/"/g, "&quot;");
 }
 
-// ── Init ──
+// ── Inicio ──
 buildCurrencySelector();
 fetchExchangeRates().then(() => {
   applyLang();
   loadProducts();
 });
 
-// ─────────────────────────────────────────────
-// Category Manager
+// Categorías personalizadas
 // ─────────────────────────────────────────────
 
-// State: custom categories added by user (default ones come from i18n)
+// Estado: categorías personalizadas añadidas por el usuario 
 let customCategories = [];
 let catMgrOpen = false;
 
@@ -632,17 +619,11 @@ catMgrToggle.addEventListener("click", () => {
 });
 
 function getAllCategories() {
-  // Merge default + custom only — categories persist independently of products
-  // Products that use a category not in either list are shown but can't be deleted
   const all = new Set([...t.categories, ...customCategories]);
-  // Also show categories used by existing products (e.g. imported data)
-  // but only add them if not already tracked — they won't persist after product deletion
-  // unless the user explicitly keeps them (that's the desired behavior)
   cachedProducts.forEach(p => {
     if (!i18n.es.categories.includes(p.category) &&
         !i18n.en.categories.includes(p.category) &&
         !customCategories.includes(p.category)) {
-      // Category came from somewhere else — show it but mark it as "orphan"
       all.add(p.category);
     }
   });
@@ -684,13 +665,12 @@ catMgrList.addEventListener("click", (e) => {
 
   const cat = btn.dataset.cat;
 
-  // Remove from default list (for this session)
+  // Eliminar de la lista predeterminada
   const esIdx = i18n.es.categories.indexOf(cat);
   if (esIdx !== -1) i18n.es.categories.splice(esIdx, 1);
   const enIdx = i18n.en.categories.indexOf(cat);
   if (enIdx !== -1) i18n.en.categories.splice(enIdx, 1);
 
-  // Remove from custom list
   customCategories = customCategories.filter(c => c !== cat);
 
   showToast(t.catMgrDeleted(cat));
@@ -699,12 +679,10 @@ catMgrList.addEventListener("click", (e) => {
   renderCatManager();
 });
 
-// Hook into new product creation to track custom categories
 const _origLoadProducts = loadProducts;
 async function loadProductsAndSync() {
   await _origLoadProducts();
   if (catMgrOpen) renderCatManager();
 }
 
-// Patch: when a custom category is used, remember it
 const origGetCategoryValue = getCategoryValue;

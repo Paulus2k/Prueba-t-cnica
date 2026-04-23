@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ── In-memory store ──
+// ── Almacenamiento en memoria ──
 let products = [];
 let history  = [];
 let nextId   = 1;
@@ -22,15 +22,13 @@ function logHistory(action, data) {
   if (history.length > 100) history.pop(); // max 100 entries
 }
 
-// ─────────────────────────────────────────────
-// GET /products
+// GET /productos
 // ─────────────────────────────────────────────
 app.get("/products", (req, res) => {
   res.status(200).json({ success: true, data: products });
 });
 
-// ─────────────────────────────────────────────
-// POST /products
+// POST /productos
 // ─────────────────────────────────────────────
 app.post("/products", (req, res) => {
   const { name, description, price, category, stock } = req.body;
@@ -59,8 +57,7 @@ app.post("/products", (req, res) => {
   res.status(201).json({ success: true, message: "Producto creado", data: newProduct });
 });
 
-// ─────────────────────────────────────────────
-// PUT /products/:id  →  Edit a product
+// PUT /products/:id  →  Editar un producto
 // ─────────────────────────────────────────────
 app.put("/products/:id", (req, res) => {
   const id    = parseInt(req.params.id);
@@ -85,8 +82,7 @@ app.put("/products/:id", (req, res) => {
   res.status(200).json({ success: true, message: "Producto actualizado", data: products[index] });
 });
 
-// ─────────────────────────────────────────────
-// DELETE /products/:id
+// BORRAR /productos/:id
 // ─────────────────────────────────────────────
 app.delete("/products/:id", (req, res) => {
   const id    = parseInt(req.params.id);
@@ -102,8 +98,7 @@ app.delete("/products/:id", (req, res) => {
   res.status(200).json({ success: true, message: "Producto eliminado", data: deleted });
 });
 
-// ─────────────────────────────────────────────
-// GET /history
+// GET /historial
 // ─────────────────────────────────────────────
 app.get("/history", (req, res) => {
   res.status(200).json({ success: true, data: history });
